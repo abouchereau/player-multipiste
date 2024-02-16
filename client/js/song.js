@@ -4,7 +4,12 @@ function Song(songName, context) {
     // name of the song
     this.name = songName;
     // url of this song
-    this.url = "track/" + songName;
+    if (window.user==null) {
+        this.url = "/track/" + songName;
+    }
+    else {
+        this.url = "/track/user/"+window.user+"/id/" + songName;
+    }
     // list of tracks in that song
     this.tracks = [];
     // master volume of this song

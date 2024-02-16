@@ -193,7 +193,7 @@ function initAudioContext() {
 
     return ctx;
 }
-    // SOUNDS AUDIO ETC.
+// SOUNDS AUDIO ETC.
 
 
 function resetAllBeforeLoadingANewSong() {
@@ -288,7 +288,11 @@ function finishedLoading(bufferList) {
 // ######### SONGS
 function loadSongList() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', "track", true);
+    let url = "/track";
+    if (window.user != null) {
+        url = "/tracks/user/"+window.user;
+    }
+    xhr.open('GET', url, true);
 
     // Menu for song selection
     var s = $("<select id='songSelect'/>");
@@ -364,7 +368,7 @@ function loadSong(songName) {
                 instrument.name + '<div style="float : right;">' +
                 "<button class='mute' id='mute" + trackNumber + "' onclick='muteUnmuteTrack(" + trackNumber + ");'><span class='glyphicon glyphicon-volume-up'></span></button> " +
                 "<button class='solo' id='solo" + trackNumber + "' onclick='soloNosoloTrack(" + trackNumber + ");'><img src='../img/earphones.png' /></button></div>" +
-                "<span id='volspan'><input type='range' class = 'volumeSlider custom' id='volume" + trackNumber + "' min='0' max = '100' value='100' oninput='setVolumeOfTrackDependingOnSliderValue(" + trackNumber + ");'/></span><td>";
+                "<span id='volspan'><input type='range' class = 'volumeSlider custom' id='volume" + trackNumber + "' min='0' max = '100' value='70' oninput='setVolumeOfTrackDependingOnSliderValue(" + trackNumber + ");'/></span><td>";
 
             divTrack.appendChild(span);
 
