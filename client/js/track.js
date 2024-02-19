@@ -2,9 +2,9 @@ function Track(songName, instrument, user) {
     // name of the track : bass, guitar, voice, etc.
     this.name = instrument.name;
     // url of the track in the form http://.../track/track_name
-    this.url = "multitrack/" + songName + "/" + instrument.sound;
+    this.url = "/multitrack/" + songName + "/" + instrument.sound;
     if (window.user != null) {
-        this.url = "/multitrack-dyn/user/"+window.user+"/song/"+songName + "/file/" + instrument.sound;
+        this.url = "/alias/"+window.user+"/"+songName + "/" + instrument.sound;
     }
     // decoded audio buffer
     this.decodedBuffer;

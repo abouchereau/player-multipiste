@@ -4,6 +4,7 @@ const fs = require("fs");
 // We need to use the express framework: have a real web server that knows how to send mime types etc.
 const express = require("express");
 const path = require("path");
+const { exec } = require("child_process");
 
 // Init globals variables for each module required
 const app = express(),
@@ -33,7 +34,7 @@ if (PORT == 8009) {
 app.use(express.static(path.resolve(__dirname, "client")));
 
 // launch the http server on given port
-server.listen(PORT || 3000, addrIP || "0.0.0.0", () => {
+server.listen(PORT || 3001, addrIP || "0.0.0.0", () => {
     const addr = server.address();
 });
 
@@ -44,6 +45,11 @@ app.get("/", (req, res) => {
 
 // routing
 app.get("/user/:user", (req, res) => {
+	const user = req.params.user;
+	//si l'alias n'existe pas on le crée
+	if (!fs.existsSync(getAliasByUser(user)) && fs.existsSync(getPathByUser(user))) {			
+		exec("ln -s "+getPathByUser(user)+" "+getAliasByUser(user));
+	}	
     res.sendfile(__dirname + "/client/index.html")
 });
 
@@ -200,31 +206,6 @@ function getPathByUser(user) {
     return "/home/kim/data/"+user+"/files/multipiste";
 }
 
-app.get("/multitrack-dyn/user/:user/song/:song/file/:file", async (req, res) => {
-    const file = req.params.file;
-    const user = req.params.user;
-    const song = req.params.song;
-    const filePath = getPathByUser(user)+"/"+song+"/"+file;
-
-
-    if (fs.existsSync(filePath)) {
-        res.setHeader('Content-Type', getMimeFromFilename(filePath));
-        res.setHeader('Content-Disposition',"attachment; filename="+file);
-        const stream = fs.createReadStream(filePath);
-        return stream.pipe(res);
-    }
-
-    return res.status(404).send(`404 – File ${file} not found.`);
-
-});
-
-function getMimeFromFilename(file) {
-    let tmp = file.split(".");
-    let ext = tmp[tmp.length-1].toLowerCase();
-
-    return  {
-        "ogg": "application/ogg",
-        "wav":"audio/x-wav",
-        "mp3":"audio/mpeg",
-        "m4a":"audio/m4a"}[ext];
+function getAliasByUser(user) {
+	return "/home/kim/player-multipiste/client/alias/"+user;
 }
